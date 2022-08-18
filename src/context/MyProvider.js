@@ -5,6 +5,7 @@ import fetchPlanets from '../services/fetchAPIStarWars';
 
 function MyProvider({ children }) {
   const [planets, setPlanets] = useState([]);
+  const [filterByName, setFilterByName] = useState({ name: '' });
 
   useEffect(() => {
     const resolvedAPI = async () => {
@@ -15,8 +16,10 @@ function MyProvider({ children }) {
     resolvedAPI();
   }, []);
 
+  const valueInfo = { planets, filterByName, setFilterByName };
+
   return (
-    <MyContext.Provider value={ { planets } }>
+    <MyContext.Provider value={ valueInfo }>
       {children}
     </MyContext.Provider>
   );
