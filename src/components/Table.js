@@ -8,8 +8,7 @@ function Table() {
     setPlanetsList,
     filterByName,
     setFilterByName,
-    // filterByNumericValues,
-    // ainda não consegui usar esse estado acima que armazena column, comparision e value ao mesmo tempo
+    filterByNumericValues,
     setFilterByNumericValues,
     filterColumn,
     setFilterColumn,
@@ -17,24 +16,27 @@ function Table() {
     setFilterComparision,
     filterValue,
     setFilterValue,
-    filterNumIsEnabled,
-    setFilterNumIsEnabled,
+    activesFilters,
+    setActivesFilters,
   } = useContext(MyContext);
 
   const showPlanets = () => {
     setPlanetsList(planets);
-    if (filterNumIsEnabled) {
+    if (activesFilters > 0) {
       let newList = [];
       if (filterComparision === 'maior que') {
-        newList = planets.filter((e) => Number(e[filterColumn]) > Number(filterValue));
+        newList = planetsList
+          .filter((e) => Number(e[filterColumn]) > Number(filterValue));
         setPlanetsList(newList);
       }
       if (filterComparision === 'menor que') {
-        newList = planets.filter((e) => Number(e[filterColumn]) < Number(filterValue));
+        newList = planetsList
+          .filter((e) => Number(e[filterColumn]) < Number(filterValue));
         setPlanetsList(newList);
       }
       if (filterComparision === 'igual a') {
-        newList = planets.filter((e) => Number(e[filterColumn]) === Number(filterValue));
+        newList = planetsList
+          .filter((e) => Number(e[filterColumn]) === Number(filterValue));
         setPlanetsList(newList);
       }
     }
@@ -42,13 +44,19 @@ function Table() {
 
   useEffect(() => {
     showPlanets();
-  }, [planets, filterNumIsEnabled]);
+  }, [planets, activesFilters]);
 
   const handleClick = () => {
-    setFilterByNumericValues([{
-      column: filterColumn, comparison: filterComparision, value: filterValue },
-    ]);
-    setFilterNumIsEnabled(true);
+    const newArray = [
+      ...filterByNumericValues,
+      {
+        column: filterColumn,
+        comparison: filterComparision,
+        value: filterValue,
+      },
+    ];
+    setFilterByNumericValues(newArray);
+    setActivesFilters(activesFilters + Number('1'));
   };
 
   return (
