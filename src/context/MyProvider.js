@@ -4,6 +4,14 @@ import MyContext from './MyContext';
 import fetchPlanets from '../services/fetchAPIStarWars';
 
 function MyProvider({ children }) {
+  const optionsColums = [
+    'population',
+    'orbital_period',
+    'diameter',
+    'rotation_period',
+    'surface_water',
+  ];
+
   const [planets, setPlanets] = useState([]);
   const [planetsList, setPlanetsList] = useState([]);
   const [filterByName, setFilterByName] = useState({ name: '' });
@@ -12,6 +20,7 @@ function MyProvider({ children }) {
   const [filterComparision, setFilterComparision] = useState('maior que');
   const [filterValue, setFilterValue] = useState(0);
   const [activesFilters, setActivesFilters] = useState(0);
+  const [activesOptions, setActivesOptions] = useState(optionsColums);
 
   useEffect(() => {
     const resolvedAPI = async () => {
@@ -38,6 +47,8 @@ function MyProvider({ children }) {
     setFilterValue,
     activesFilters,
     setActivesFilters,
+    activesOptions,
+    setActivesOptions,
   };
 
   return (

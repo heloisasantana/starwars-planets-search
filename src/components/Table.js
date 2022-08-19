@@ -18,6 +18,8 @@ function Table() {
     setFilterValue,
     activesFilters,
     setActivesFilters,
+    activesOptions,
+    setActivesOptions,
   } = useContext(MyContext);
 
   const showPlanets = () => {
@@ -56,6 +58,8 @@ function Table() {
       },
     ];
     setFilterByNumericValues(newArray);
+    const newOptions = activesOptions.filter((item) => item !== filterColumn);
+    setActivesOptions(newOptions);
     setActivesFilters(activesFilters + Number('1'));
   };
 
@@ -70,18 +74,12 @@ function Table() {
       <select
         data-testid="column-filter"
         onChange={ ({ target }) => setFilterColumn(target.value) }
-        value={ filterColumn }
       >
-        <option>population</option>
-        <option>orbital_period</option>
-        <option>diameter</option>
-        <option>rotation_period</option>
-        <option>surface_water</option>
+        { activesOptions.map((item, index) => <option key={ index }>{item}</option>)}
       </select>
       <select
         data-testid="comparison-filter"
         onChange={ ({ target }) => setFilterComparision(target.value) }
-        value={ filterComparision }
       >
         <option>maior que</option>
         <option>menor que</option>
