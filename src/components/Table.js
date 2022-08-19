@@ -1,12 +1,54 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import MyContext from '../context/MyContext';
 
 function Table() {
-  const { planets, filterByName, setFilterByName } = useContext(MyContext);
+  const {
+    planets,
+    planetsList,
+    setPlanetsList,
+    filterByName,
+    setFilterByName,
+    // filterByNumericValues,
+    // ainda não consegui usar esse estado acima que armazena column, comparision e value ao mesmo tempo
+    setFilterByNumericValues,
+    filterColumn,
+    setFilterColumn,
+    filterComparision,
+    setFilterComparision,
+    filterValue,
+    setFilterValue,
+    filterNumIsEnabled,
+    setFilterNumIsEnabled,
+  } = useContext(MyContext);
 
-  const handleChange = (event) => {
-    const { value } = event.target;
-    setFilterByName({ name: value });
+  const showPlanets = () => {
+    setPlanetsList(planets);
+    if (filterNumIsEnabled) {
+      let newList = [];
+      if (filterComparision === 'maior que') {
+        newList = planets.filter((e) => Number(e[filterColumn]) > Number(filterValue));
+        setPlanetsList(newList);
+      }
+      if (filterComparision === 'menor que') {
+        newList = planets.filter((e) => Number(e[filterColumn]) < Number(filterValue));
+        setPlanetsList(newList);
+      }
+      if (filterComparision === 'igual a') {
+        newList = planets.filter((e) => Number(e[filterColumn]) === Number(filterValue));
+        setPlanetsList(newList);
+      }
+    }
+  };
+
+  useEffect(() => {
+    showPlanets();
+  }, [planets, filterNumIsEnabled]);
+
+  const handleClick = () => {
+    setFilterByNumericValues([{
+      column: filterColumn, comparison: filterComparision, value: filterValue },
+    ]);
+    setFilterNumIsEnabled(true);
   };
 
   return (
@@ -14,9 +56,42 @@ function Table() {
       <h1>Star Wars Planets Search</h1>
       <input
         type="text"
-        onChange={ handleChange }
+        onChange={ ({ target }) => setFilterByName({ name: target.value }) }
         data-testid="name-filter"
       />
+      <select
+        data-testid="column-filter"
+        onChange={ ({ target }) => setFilterColumn(target.value) }
+        value={ filterColumn }
+      >
+        <option>population</option>
+        <option>orbital_period</option>
+        <option>diameter</option>
+        <option>rotation_period</option>
+        <option>surface_water</option>
+      </select>
+      <select
+        data-testid="comparison-filter"
+        onChange={ ({ target }) => setFilterComparision(target.value) }
+        value={ filterComparision }
+      >
+        <option>maior que</option>
+        <option>menor que</option>
+        <option>igual a</option>
+      </select>
+      <input
+        type="number"
+        data-testid="value-filter"
+        onChange={ ({ target }) => setFilterValue(target.value) }
+        value={ filterValue }
+      />
+      <button
+        type="button"
+        data-testid="button-filter"
+        onClick={ handleClick }
+      >
+        Filtrar
+      </button>
       <table>
         <thead>
           <tr>
@@ -36,7 +111,7 @@ function Table() {
           </tr>
         </thead>
         <tbody>
-          { planets.filter((item) => item.name.includes(filterByName.name))
+          { planetsList.filter((item) => item.name.includes(filterByName.name))
             .map((item, index) => (
               <tr key={ index }>
                 <td>{item.name}</td>
